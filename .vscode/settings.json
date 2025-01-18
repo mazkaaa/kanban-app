@@ -1,0 +1,62 @@
+{
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "search.exclude": {
+    "package-lock.json": true
+  },
+
+  // Auto fix with ESLint on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.addMissingImports": "always",
+    "source.organizeImports": "always"
+  },
+
+  // TypeScript
+  "typescript.tsdk": "node_modules/typescript/lib", // Use the workspace version of TypeScript
+  "typescript.enablePromptUseWorkspaceTsdk": true, // Opt into using workspace version of TypeScript
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "next/router.d.ts",
+    "next/dist/client/router.d.ts"
+  ],
+  "typescript.preferences.preferTypeOnlyAutoImports": true, // Prefer type-only imports
+
+  // Vitest
+  "testing.openTesting": "neverOpen", // Don't open the testing view automatically when running tests
+
+  // I18n
+  "i18n-ally.localesPaths": ["src/locales"],
+  "i18n-ally.keystyle": "nested",
+
+  // Enable the default formatter, use ESLint instead
+  "prettier.enable": true,
+  "editor.formatOnSave": true,
+
+  // Enable eslint for all supported languages
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "yaml",
+    "toml",
+    "xml",
+    "gql",
+    "graphql",
+    "astro",
+    "css",
+    "less",
+    "scss",
+    "pcss",
+    "postcss",
+    "github-actions-workflow"
+  ],
+
+  // Make sure Prettier runs without conflicts with ESLint
+  "prettier.requireConfig": true, // Ensures Prettier runs only if config is present
+  "editor.formatOnSaveMode": "file",
+  "testing.automaticallyOpenTestResults": "neverOpen" // Ensures only one formatter runs at a time
+}
