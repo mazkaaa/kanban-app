@@ -14,11 +14,11 @@ export const Input = ({ variant = "md", isError = false, ...props }: PROPS) => {
     <input
       {...props}
       className={
-        "rounded-lg border bg-transparent outline-none focus-within:border-zinc-200 " +
+        "rounded-lg border bg-transparent outline-none focus-within:border-foreground " +
         props.className +
         " " +
         inputSize[variant] +
-        (isError ? " border-red-600" : " border-zinc-600")
+        (isError ? " border-red-600" : " border-zinc-400")
       }
     />
   );

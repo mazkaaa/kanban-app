@@ -15,10 +15,10 @@ export const Header = () => {
 
   return (
     <header className="flex items-end justify-between">
-      <h2 className="text-2xl font-bold tracking-wide text-zinc-100">
+      <h2 className="text-2xl font-bold tracking-wide text-foreground">
         Kanban.
       </h2>
-      <h4 className="text-lg font-semibold text-zinc-200">{accountName}</h4>
+      <h4 className="text-lg font-semibold text-foreground">{accountName}</h4>
     </header>
   );
 };

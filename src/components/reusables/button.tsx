@@ -6,7 +6,8 @@ interface PROPS extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = (props: PROPS) => {
   const { variant = "primary" } = props;
   const color = {
-    primary: "bg-zinc-100 hover:bg-zinc-300",
+    primary:
+      "dark:bg-zinc-100 dark:hover:bg-zinc-300 bg-zinc-800 hover:bg-zinc-700",
     secondary: "bg-zinc-400",
     danger: "bg-red-600",
     success: "bg-green-600",
