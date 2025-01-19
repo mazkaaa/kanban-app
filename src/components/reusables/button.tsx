@@ -20,7 +20,9 @@ export const Button = (props: PROPS) => {
         "flex w-full items-center justify-center rounded-lg px-4 py-2 text-center font-semibold text-background transition-all focus:outline-none " +
         color[variant] +
         " " +
-        props.className
+        props.className +
+        " " +
+        (props.disabled ? "cursor-not-allowed opacity-50" : "")
       }
     />
   );

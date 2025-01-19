@@ -1,15 +1,20 @@
 "use client";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button, TaskColumn } from "../reusables";
-import { ITaskResponse } from "../types";
+import { taskService } from "../services";
+import { ModalForm } from "./modal-form";
 
-interface PROPS {
-  tasks: ITaskResponse[];
-}
-export const DashboardPage = ({ tasks }: PROPS) => {
+export const DashboardPage = () => {
   const router = useRouter();
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const { data: tasks } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: () => taskService().getTasks(),
+  });
 
   useEffect(() => {
     if (!localStorage.getItem("authData")) {
@@ -20,12 +25,24 @@ export const DashboardPage = ({ tasks }: PROPS) => {
 
   return (
     <main className="space-y-6">
-      <Button>Create task</Button>
+      <Button
+        onClick={() => {
+          setModalOpen(true);
+        }}
+      >
+        Create task
+      </Button>
       <section className="grid grid-cols-4 gap-4">
-        <TaskColumn data={tasks} className="col-span-2" type="to do" />
-        <TaskColumn data={tasks} className="col-span-2" type="doing" />
-        <TaskColumn data={tasks} className="col-span-full" type="done" />
+        <TaskColumn data={tasks || []} className="col-span-2" type="to do" />
+        <TaskColumn data={tasks || []} className="col-span-2" type="doing" />
+        <TaskColumn data={tasks || []} className="col-span-full" type="done" />
       </section>
+      <ModalForm
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+        }}
+      />
     </main>
   );
 };

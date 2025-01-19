@@ -1,9 +1,9 @@
 import React from "react";
+import type { IInputBasic } from "../types";
 
-interface PROPS extends React.InputHTMLAttributes<HTMLInputElement> {
-  variant?: "sm" | "md" | "lg";
-  isError?: boolean;
-}
+interface PROPS
+  extends React.InputHTMLAttributes<HTMLInputElement>,
+    IInputBasic {}
 export const Input = ({ variant = "md", isError = false, ...props }: PROPS) => {
   const inputSize = {
     sm: "px-2 py-1 text-sm",

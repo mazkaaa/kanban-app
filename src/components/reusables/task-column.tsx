@@ -41,7 +41,7 @@ export const TaskColumn = ({ type, className, data }: PROPS) => {
   return (
     <div
       className={
-        "h-auto min-h-36 w-full space-y-3 rounded-lg border border-zinc-400 p-4 dark:border-zinc-600 " +
+        "h-auto min-h-36 w-full space-y-3 rounded-lg border border-zinc-400 p-4 transition-all dark:border-zinc-600 " +
         className
       }
     >

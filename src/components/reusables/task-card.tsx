@@ -10,17 +10,19 @@ export const TaskCard = ({ description, name, team }: PROPS) => {
         <h3 className="text-base font-bold">{name}</h3>
         {description && <p className="text-sm">{description}</p>}
       </section>
-      <div className="text-sm">
-        {team.map((item, index) => (
-          <span
-            key={index}
-            className="border-b border-dashed border-background"
-          >
-            {item}
-            {index !== team.length - 1 ? ", " : ""}
-          </span>
-        ))}
-      </div>
+      {team.length > 0 && (
+        <div className="text-sm">
+          {team.map((item, index) => (
+            <span
+              key={index}
+              className="border-b border-dashed border-background"
+            >
+              {item}
+              {index !== team.length - 1 ? ", " : ""}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
