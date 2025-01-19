@@ -47,7 +47,7 @@ export const SelectMultiple = ({
           className={
             "rounded-lg px-2 py-1 text-sm focus:outline-none " +
             (value?.includes(item.value)
-              ? "bg-zinc-400 text-background"
+              ? "border bg-zinc-400 text-background"
               : "border bg-transparent text-foreground")
           }
         >

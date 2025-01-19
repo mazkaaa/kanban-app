@@ -1,4 +1,4 @@
-import { DashboardPage } from "@/components/containers";
+import { DashboardDetailPage } from "@/components/containers";
 import { taskService } from "@/components/services";
 import {
   dehydrate,
@@ -6,15 +6,22 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 
-export default async function Page() {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const id = (await params).id;
+
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["tasks"],
-    queryFn: () => taskService().getTasks(),
+    queryKey: ["task", id],
+    queryFn: () => taskService().getTask(id),
   });
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <DashboardPage />
+      <DashboardDetailPage id={id} />
     </HydrationBoundary>
   );
 }
