@@ -38,6 +38,7 @@ export const DashboardPage = () => {
         <TaskColumn data={tasks || []} className="col-span-full" type="done" />
       </section>
       <ModalForm
+        type="add"
         isOpen={modalOpen}
         onClose={() => {
           setModalOpen(false);

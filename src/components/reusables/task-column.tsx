@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import type { ITaskResponse, StatusType } from "../types";
+import { defineStatusColor } from "../utils";
 import { TaskCard } from "./task-card";
 
 interface PROPS {
@@ -29,13 +30,7 @@ export const TaskColumn = ({ type, className, data }: PROPS) => {
   }, [data, type]);
 
   const defineTitleColor = useMemo(() => {
-    if (type === "to do") {
-      return "dark:text-zinc-400 text-zinc-600";
-    } else if (type === "doing") {
-      return "text-yellow-600";
-    } else {
-      return "text-teal-600";
-    }
+    return defineStatusColor(type);
   }, [type]);
 
   return (

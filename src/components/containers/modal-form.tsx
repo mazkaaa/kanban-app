@@ -1,16 +1,18 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button, Input, Modal, Select, SelectMultiple } from "../reusables";
 import { taskService } from "../services";
-import type { ITaskRequest, TeamType } from "../types";
+import type { ITaskRequest, ITaskResponse, TeamType } from "../types";
 
 interface PROPS {
   isOpen: boolean;
   onClose: () => void;
+  type: "add" | "edit";
+  selectedData?: ITaskResponse;
 }
-export const ModalForm = ({ isOpen, onClose }: PROPS) => {
+export const ModalForm = ({ isOpen, onClose, type, selectedData }: PROPS) => {
   const [payload, setPayload] = useState<ITaskRequest>({
     createdAt: "",
     description: "",
@@ -24,8 +26,19 @@ export const ModalForm = ({ isOpen, onClose }: PROPS) => {
   });
 
   const queryClient = useQueryClient();
-  const mutation = useMutation({
+  const mutationCreate = useMutation({
     mutationFn: taskService().createTask,
+  });
+  const mutationEdit = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: ITaskRequest }) =>
+      taskService().updateTask(id, {
+        createdAt: data.createdAt,
+        description: data.description,
+        name: data.name,
+        status: data.status,
+        team: data.team,
+        updatedAt: data.updatedAt,
+      }),
   });
 
   const handleSubmit = useCallback(async () => {
@@ -39,39 +52,100 @@ export const ModalForm = ({ isOpen, onClose }: PROPS) => {
       setError({
         name: false,
       });
-      mutation.mutateAsync(
-        {
-          createdAt: new Date().toISOString(),
-          description: payload.description,
-          name: payload.name,
-          status: payload.status,
-          team: payload.team,
-          updatedAt: "",
-        },
-        {
-          onError: (error) => {
-            toast.error(error.message);
+      if (type === "add") {
+        mutationCreate.mutateAsync(
+          {
+            createdAt: new Date().toISOString(),
+            description: payload.description,
+            name: payload.name,
+            status: payload.status,
+            team: payload.team,
+            updatedAt: "",
           },
-          onSuccess: () => {
-            toast.success("Task created successfully");
-            onClose();
-            queryClient.invalidateQueries({
-              queryKey: ["tasks"],
-            });
+          {
+            onError: (error) => {
+              toast.error(error.message);
+            },
+            onSuccess: () => {
+              toast.success("Task created successfully");
+              onClose();
+              queryClient.invalidateQueries({
+                queryKey: ["tasks"],
+              });
+            },
           },
-        },
-      );
+        );
+      } else {
+        mutationEdit.mutateAsync(
+          {
+            id: selectedData?.id || "",
+            data: {
+              createdAt: payload.createdAt,
+              description: payload.description,
+              name: payload.name,
+              status: payload.status,
+              team: payload.team,
+              updatedAt: new Date().toISOString(),
+            },
+          },
+          {
+            onError: (error) => {
+              toast.error(error.message);
+            },
+            onSuccess: () => {
+              toast.success("Task updated successfully");
+              onClose();
+              Promise.all([
+                queryClient.invalidateQueries({
+                  queryKey: ["tasks"],
+                }),
+                queryClient.invalidateQueries({
+                  queryKey: ["task"],
+                }),
+              ]);
+            },
+          },
+        );
+      }
     }
   }, [
     error,
-    mutation,
+    mutationCreate,
+    mutationEdit,
     onClose,
+    payload.createdAt,
     payload.description,
     payload.name,
     payload.status,
     payload.team,
     queryClient,
+    selectedData?.id,
+    type,
   ]);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (type === "edit" && selectedData) {
+        setPayload({
+          createdAt: selectedData.createdAt,
+          description: selectedData.description,
+          name: selectedData.name,
+          status: selectedData.status,
+          team: selectedData.team,
+          updatedAt: selectedData.updatedAt,
+        });
+      } else {
+        setPayload({
+          createdAt: "",
+          description: "",
+          name: "",
+          status: "to do",
+          team: [],
+          updatedAt: "",
+        });
+      }
+    }
+  }, [isOpen, selectedData, type]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create Task">
@@ -149,9 +223,15 @@ export const ModalForm = ({ isOpen, onClose }: PROPS) => {
             />
           </div>
         </section>
-        <Button type="submit" disabled={mutation.isPending}>
-          {mutation.isPending ? "Creating task..." : "Submit"}
-        </Button>
+        {type === "add" ? (
+          <Button type="submit" disabled={mutationCreate.isPending}>
+            {mutationCreate.isPending ? "Creating task..." : "Submit"}
+          </Button>
+        ) : (
+          <Button type="submit" disabled={mutationCreate.isPending}>
+            {mutationEdit.isPending ? "Updating task..." : "Save changes"}
+          </Button>
+        )}
       </form>
     </Modal>
   );
