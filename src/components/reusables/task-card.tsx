@@ -30,8 +30,8 @@ export const TaskCard = ({ id, description, name, team, href }: PROPS) => {
       className="space-y-4 rounded-lg bg-zinc-800 p-4 text-background dark:bg-zinc-200"
     >
       <section className="">
-        <Link href={href || "#"}>
-          <h3 className="text-base font-bold underline">{name}</h3>
+        <Link className="text-base font-bold underline" href={href || "#"}>
+          {name}
         </Link>
         {description && <p className="text-sm">{description}</p>}
       </section>
