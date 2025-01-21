@@ -45,10 +45,10 @@ export const SelectMultiple = ({
             }
           }}
           className={
-            "rounded-lg px-2 py-1 text-sm focus:outline-none " +
+            "rounded-lg px-2 py-1 text-sm focus:outline-none border border-zinc-600 " +
             (value?.includes(item.value)
-              ? "border bg-zinc-400 text-background"
-              : "border bg-transparent text-foreground")
+              ? "text-background dark:bg-zinc-400 bg-zinc-600"
+              : "bg-transparent text-foreground")
           }
         >
           {item.label}

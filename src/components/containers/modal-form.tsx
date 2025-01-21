@@ -148,7 +148,9 @@ export const ModalForm = ({ isOpen, onClose, type, selectedData }: PROPS) => {
   }, [isOpen, selectedData, type]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Create Task">
+    <Modal isOpen={isOpen} onClose={onClose} title={
+      type === "add" ? "Add new task" : "Edit task"
+    }>
       <form
         onSubmit={(e) => {
           e.preventDefault();

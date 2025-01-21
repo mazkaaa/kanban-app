@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button, TaskColumn } from "../reusables";
 import { taskService } from "../services";
@@ -15,6 +15,12 @@ export const DashboardPage = () => {
     queryKey: ["tasks"],
     queryFn: () => taskService().getTasks(),
   });
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("authData");
+    router.push("/");
+    toast.success("Successfully logged out");
+  }, [router])
 
   useEffect(() => {
     if (!localStorage.getItem("authData")) {
@@ -44,6 +50,12 @@ export const DashboardPage = () => {
           setModalOpen(false);
         }}
       />
+      <Button
+        onClick={handleLogout}
+        variant='outline_danger'
+      >
+        Logout
+      </Button>
     </main>
   );
 };

@@ -43,28 +43,28 @@ export const DashboardDetailPage = (props: PROPS) => {
               ({task.status})
             </span>
           </div>
-          <p className="text-sm text-zinc-400">{task?.description}</p>
+          <p className="text-sm dark:text-zinc-400 text-zinc-600">{task?.description}</p>
         </section>
         <section className="space-y-2">
           <h2 className="text-xl font-medium">Assigned to:</h2>
-          <ul className="text-zinc-300">
+          <ul className="dark:text-zinc-300 text-zinc-700">
             {task.team.map((member, index) => (
               <li key={index} className="flex items-center space-x-2">
-                <span className="border-b border-dashed">{member}</span>
+                <span className="border-b border-dashed dark:border-zinc-300 border-zinc-700">{member}</span>
               </li>
             ))}
           </ul>
         </section>
         <section className="grid grid-cols-2 gap-4">
           <div>
-            <h2 className="text-sm font-medium text-zinc-300">Created at:</h2>
-            <p className="text-sm text-zinc-400">
+            <h2 className="text-sm font-medium dark:text-zinc-300 text-zinc-500">Created at:</h2>
+            <p className="text-sm dark:text-zinc-400 text-zinc-600">
               {formatDateToFulldate(task.createdAt)}
             </p>
           </div>
           <div>
-            <h2 className="text-sm font-medium text-zinc-300">Updated at:</h2>
-            <p className="text-sm text-zinc-400">
+            <h2 className="text-sm font-medium dark:text-zinc-300 text-zinc-500">Updated at:</h2>
+            <p className="text-sm dark:text-zinc-400 text-zinc-600">
               {task.updatedAt ? formatDateToFulldate(task.updatedAt) : "-"}
             </p>
           </div>
