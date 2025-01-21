@@ -1,8 +1,8 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { Button, Input } from "../reusables";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Button, Input } from "../reusables";
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -100,7 +100,9 @@ export const LoginForm = () => {
             />
           </div>
         </section>
-        <Button type="submit">Login</Button>
+        <Button className="w-full" type="submit">
+          Login
+        </Button>
       </form>
     </div>
   );

@@ -18,19 +18,17 @@ export const ModalConfirmDelete = ({ isOpen, onClose, selectedId }: PROPS) => {
     mutationFn: taskService().deleteTask,
   });
   const handleDelete = useCallback(() => {
-    mutationDelete.mutateAsync(selectedId, {
-      onError: (error) => {
-        toast.error(error.message);
-      },
-      onSuccess: () => {
-        toast.success("Task deleted successfully");
+    toast.promise(mutationDelete.mutateAsync(selectedId), {
+      loading: "Deleting task...",
+      success: () => {
         onClose();
         router.push("/dashboard");
-
         queryClient.invalidateQueries({
           queryKey: ["tasks"],
         });
+        return "Task deleted successfully";
       },
+      error: "An error occurred while deleting task",
     });
   }, [mutationDelete, onClose, queryClient, router, selectedId]);
 
@@ -39,10 +37,20 @@ export const ModalConfirmDelete = ({ isOpen, onClose, selectedId }: PROPS) => {
       <div className="space-y-4">
         <p>Are you sure you want to delete this task?</p>
         <div className="flex justify-end space-x-4">
-          <Button onClick={onClose} type="button" variant="primary">
+          <Button
+            className="w-full md:w-auto"
+            onClick={onClose}
+            type="button"
+            variant="primary"
+          >
             Cancel
           </Button>
-          <Button onClick={handleDelete} type="button" variant="outline_danger">
+          <Button
+            className="w-full md:w-auto"
+            onClick={handleDelete}
+            type="button"
+            variant="outline_danger"
+          >
             Delete
           </Button>
         </div>

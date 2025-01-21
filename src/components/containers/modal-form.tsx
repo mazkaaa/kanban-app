@@ -53,31 +53,30 @@ export const ModalForm = ({ isOpen, onClose, type, selectedData }: PROPS) => {
         name: false,
       });
       if (type === "add") {
-        mutationCreate.mutateAsync(
-          {
+        toast.promise(
+          mutationCreate.mutateAsync({
             createdAt: new Date().toISOString(),
             description: payload.description,
             name: payload.name,
             status: payload.status,
             team: payload.team,
             updatedAt: "",
-          },
+          }),
           {
-            onError: (error) => {
-              toast.error(error.message);
-            },
-            onSuccess: () => {
-              toast.success("Task created successfully");
+            loading: "Creating task...",
+            error: "Failed to create task",
+            success: () => {
               onClose();
               queryClient.invalidateQueries({
                 queryKey: ["tasks"],
               });
+              return "Task created successfully";
             },
           },
         );
       } else {
-        mutationEdit.mutateAsync(
-          {
+        toast.promise(
+          mutationEdit.mutateAsync({
             id: selectedData?.id || "",
             data: {
               createdAt: payload.createdAt,
@@ -87,13 +86,10 @@ export const ModalForm = ({ isOpen, onClose, type, selectedData }: PROPS) => {
               team: payload.team,
               updatedAt: new Date().toISOString(),
             },
-          },
+          }),
           {
-            onError: (error) => {
-              toast.error(error.message);
-            },
-            onSuccess: () => {
-              toast.success("Task updated successfully");
+            loading: "Updating task...",
+            success: () => {
               onClose();
               Promise.all([
                 queryClient.invalidateQueries({
@@ -103,7 +99,9 @@ export const ModalForm = ({ isOpen, onClose, type, selectedData }: PROPS) => {
                   queryKey: ["task"],
                 }),
               ]);
+              return "Task updated successfully";
             },
+            error: "Failed to update task",
           },
         );
       }
@@ -148,9 +146,11 @@ export const ModalForm = ({ isOpen, onClose, type, selectedData }: PROPS) => {
   }, [isOpen, selectedData, type]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={
-      type === "add" ? "Add new task" : "Edit task"
-    }>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={type === "add" ? "Add new task" : "Edit task"}
+    >
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -226,13 +226,41 @@ export const ModalForm = ({ isOpen, onClose, type, selectedData }: PROPS) => {
           </div>
         </section>
         {type === "add" ? (
-          <Button type="submit" disabled={mutationCreate.isPending}>
-            {mutationCreate.isPending ? "Creating task..." : "Submit"}
-          </Button>
+          <div className="flex space-x-2 md:justify-end md:space-x-2">
+            <Button
+              onClick={onClose}
+              type="button"
+              variant="outline_danger"
+              className="w-full md:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button
+              className="w-full md:ml-auto md:w-auto"
+              type="submit"
+              disabled={mutationCreate.isPending}
+            >
+              {mutationCreate.isPending ? "Creating task..." : "Submit"}
+            </Button>
+          </div>
         ) : (
-          <Button type="submit" disabled={mutationCreate.isPending}>
-            {mutationEdit.isPending ? "Updating task..." : "Save changes"}
-          </Button>
+          <div className="flex space-x-2 md:justify-end md:space-x-2">
+            <Button
+              onClick={onClose}
+              type="button"
+              variant="outline_danger"
+              className="w-full md:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button
+              className="w-full md:w-auto"
+              type="submit"
+              disabled={mutationCreate.isPending}
+            >
+              {mutationEdit.isPending ? "Updating task..." : "Save changes"}
+            </Button>
+          </div>
         )}
       </form>
     </Modal>

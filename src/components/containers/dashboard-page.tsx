@@ -48,6 +48,9 @@ export const DashboardPage = () => {
     async (event: DragEndEvent) => {
       const { active, over } = event;
       if (over && active.id !== over.id) {
+        if (tasks.find((task) => task.id === active.id)?.status === over.id) {
+          return;
+        }
         const updatedTasks = tasks.map((task) => {
           if (task.id === active.id) {
             return {
@@ -58,45 +61,34 @@ export const DashboardPage = () => {
           return task;
         });
         setTasks(updatedTasks);
-        try {
-          const taskToUpdate = updatedTasks.find(
-            (task) => task.id === active.id,
-          );
-          if (taskToUpdate && taskToUpdate.name) {
-            toast.promise(
-              mutation.mutateAsync({
-                id: active.id.toString(),
-                payload: {
-                  name: taskToUpdate.name,
-                  description: taskToUpdate.description || "",
-                  team: taskToUpdate.team || [],
-                  status: taskToUpdate.status,
-                  createdAt: taskToUpdate.createdAt || "",
-                  updatedAt: new Date().toISOString(),
-                },
-              }),
-              {
-                loading: "Updating task...",
-                success: () => {
-                  queryClient.invalidateQueries({
-                    queryKey: ["tasks"],
-                  });
-                  return "Task updated successfully";
-                },
-                error: () => {
-                  setTasks(tasks);
-                  return "Failed to update task";
-                },
+        const taskToUpdate = updatedTasks.find((task) => task.id === active.id);
+        if (taskToUpdate && taskToUpdate.name) {
+          toast.promise(
+            mutation.mutateAsync({
+              id: active.id.toString(),
+              payload: {
+                name: taskToUpdate.name,
+                description: taskToUpdate.description || "",
+                team: taskToUpdate.team || [],
+                status: taskToUpdate.status,
+                createdAt: taskToUpdate.createdAt || "",
+                updatedAt: new Date().toISOString(),
               },
-            );
-          }
-          toast.success("Task updated successfully");
-        } catch (error) {
-          if (error instanceof Error) {
-            toast.error(error.message);
-          } else {
-            toast.error("An unknown error occurred");
-          }
+            }),
+            {
+              loading: "Updating task...",
+              success: () => {
+                queryClient.invalidateQueries({
+                  queryKey: ["tasks"],
+                });
+                return "Task updated successfully";
+              },
+              error: () => {
+                setTasks(tasks);
+                return "Failed to update task";
+              },
+            },
+          );
         }
       }
     },
@@ -109,14 +101,27 @@ export const DashboardPage = () => {
         onClick={() => {
           setModalOpen(true);
         }}
+        className="w-full md:ml-auto md:w-auto"
       >
         Create task
       </Button>
       <DndContext onDragEnd={handleDragEnd}>
-        <section className="grid grid-cols-4 gap-4">
-          <TaskColumn id="to do" data={tasks} className="col-span-2" />
-          <TaskColumn id="doing" data={tasks} className="col-span-2" />
-          <TaskColumn id="done" data={tasks} className="col-span-full" />
+        <section className="grid grid-cols-4 gap-6 md:grid-cols-3">
+          <TaskColumn
+            id="to do"
+            data={tasks}
+            className="col-span-2 md:col-span-1"
+          />
+          <TaskColumn
+            id="doing"
+            data={tasks}
+            className="col-span-2 md:col-span-1"
+          />
+          <TaskColumn
+            id="done"
+            data={tasks}
+            className="col-span-full md:col-span-1"
+          />
         </section>
       </DndContext>
       <ModalForm
@@ -126,7 +131,11 @@ export const DashboardPage = () => {
           setModalOpen(false);
         }}
       />
-      <Button onClick={handleLogout} variant="outline_danger">
+      <Button
+        className="w-full md:mx-auto md:w-auto"
+        onClick={handleLogout}
+        variant="outline_danger"
+      >
         Logout
       </Button>
     </main>
