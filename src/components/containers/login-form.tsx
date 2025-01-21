@@ -53,7 +53,7 @@ export const LoginForm = () => {
   }, [router]);
 
   return (
-    <div className="w-full space-y-6 rounded-lg border border-zinc-600 p-8">
+    <div className="w-full space-y-6 rounded-lg border border-zinc-600 p-8 md:max-w-lg">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold">Welcome to Kanban App</h1>
         <p className="text-lg text-zinc-400">
